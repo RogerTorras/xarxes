@@ -20,8 +20,13 @@
 // TODO: some includes here
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
-#include <sys/socket.h> 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+ 
 #define PORT 8080
 #define MAXLINE 1024
 
@@ -31,7 +36,7 @@ int main(int argc, char **argv) {
 	(void) argv;
 	char buffer[MAXLINE];
 	struct sockaddr_in servaddr, cliaddr;
-	int sockfd = socket(AF_INET,SOCK_GRAM,0);
+	int sockfd = socket(AF_INET,SOCK_DGRAM,0);
 	
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = INADDR_ANY;
@@ -40,10 +45,11 @@ int main(int argc, char **argv) {
 	
 	int n, len;
 	len = sizeof(cliaddr);
-	for(int i = 0; i<2;i++)
+	for(int i = 0; i<3;i++)
 	{
 		n = recvfrom(sockfd,(char *) buffer,MAXLINE, MSG_WAITALL, (struct sockaddr *) &cliaddr, &len);
 		buffer[n] = '\0';
+		printf(buffer);
 		sendto(sockfd,(char *) buffer,strlen(buffer), MSG_CONFIRM, (struct sockaddr *) &cliaddr, &len);
 	}
 
