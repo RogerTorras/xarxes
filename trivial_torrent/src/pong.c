@@ -18,16 +18,34 @@
  */
 
 // TODO: some includes here
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h> 
+#define PORT 8080
+#define MAXLINE 1024
 
 int main(int argc, char **argv) {
 
 	(void) argc; // This is how an unused parameter warning is silenced.
 	(void) argv;
-	int s = socket(PF_INET,SOCK_GRAM,0);
+	char buffer[MAXLINE];
+	struct sockaddr_in servaddr, cliaddr;
+	int sockfd = socket(AF_INET,SOCK_GRAM,0);
 	
-	int bild(int sockfd, const struct sockaddr *myaddr,int affrlen);
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_addr.s_addr = INADDR_ANY;
+	servaddr.sin_port = htons(PORT);
+	bind(sockfd, (const struct sockaddr *)&servaddr,sizeof(servaddr));
+	
+	int n, len;
+	len = sizeof(cliaddr);
+	for(int i = 0; i<2;i++)
+	{
+		n = recvfrom(sockfd,(char *) buffer,MAXLINE, MSG_WAITALL, (struct sockaddr *) &cliaddr, &len);
+		buffer[n] = '\0';
+		sendto(sockfd,(char *) buffer,strlen(buffer), MSG_CONFIRM, (struct sockaddr *) &cliaddr, &len);
+	}
 
 	// TODO: some socket stuff here
 
