@@ -49,7 +49,6 @@ int main(int argc, char **argv) {
 	{
 		n = recvfrom(sockfd,(char *) buffer,MAXLINE, MSG_WAITALL, (struct sockaddr *) &cliaddr, &len);
 		buffer[n] = '\0';
-		printf(buffer);
 		sendto(sockfd,(char *) buffer,strlen(buffer), MSG_CONFIRM, (struct sockaddr *) &cliaddr, &len);
 	}
 
